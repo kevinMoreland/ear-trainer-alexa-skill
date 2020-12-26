@@ -21,6 +21,19 @@ const LaunchHandler = {
   },
 };
 
+const BeginTestHandler = {
+  canHandler(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    return request.type === 'IntentRequest'
+      && request.intent.name === "BeginTestIntent";
+  },
+  handle(handlerInput) {
+    return handlerInput.responseBuilder
+      .speak("Place holder. Will start test here")
+      .getResponse();
+  },
+};
+
 const HelpHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
