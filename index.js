@@ -141,7 +141,8 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
   .addRequestHandlers(
-    GetNewFactHandler,
+    LaunchHandler,
+    BeginTestHandler,
     HelpHandler,
     ExitHandler,
     FallbackHandler,
