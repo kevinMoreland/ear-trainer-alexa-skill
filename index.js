@@ -22,7 +22,7 @@ const LaunchHandler = {
 };
 
 const BeginTestHandler = {
-  canHandler(handlerInput) {
+  canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
     return request.type === 'IntentRequest'
       && request.intent.name === "BeginTestIntent";
