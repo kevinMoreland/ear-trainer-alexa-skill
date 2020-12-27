@@ -29,7 +29,7 @@ const BeginTestHandler = {
     const speakOutput = "Name this chord. beep.";
     return handlerInput.responseBuilder
       .speak(speakOutput)
-      .reprompt(speakOutput);
+      .reprompt(speakOutput)
       .getResponse();
   },
 };
