@@ -42,9 +42,10 @@ const HelpHandler = {
   },
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const speakOutput = "Good vibrations ear trainer tests you on your ability to identify chords. Say test me to start a test.";
     return handlerInput.responseBuilder
-      .speak(requestAttributes.t('HELP_MESSAGE'))
-      .reprompt(requestAttributes.t('HELP_REPROMPT'))
+      .speak(speakOutput)
+      .reprompt(speakOutput)
       .getResponse();
   },
 };
@@ -76,8 +77,9 @@ const ExitHandler = {
   },
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const speakOutput = "Good bye!";
     return handlerInput.responseBuilder
-      .speak(requestAttributes.t('STOP_MESSAGE'))
+      .speak(speakOutput)
       .getResponse();
   },
 };
@@ -101,41 +103,12 @@ const ErrorHandler = {
     console.log(`Error handled: ${error.message}`);
     console.log(`Error stack: ${error.stack}`);
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const speakOutput = "Sorry, an error occured with good vibrations musical ear trainer.";
     return handlerInput.responseBuilder
-      .speak(requestAttributes.t('ERROR_MESSAGE'))
-      .reprompt(requestAttributes.t('ERROR_MESSAGE'))
+      .speak(speakOutput)
+      .reprompt(speakOutput)
       .getResponse();
   },
-};
-
-const LocalizationInterceptor = {
-  process(handlerInput) {
-    // Gets the locale from the request and initializes i18next.
-    const localizationClient = i18n.init({
-      lng: handlerInput.requestEnvelope.request.locale,
-      resources: languageStrings,
-      returnObjects: true
-    });
-    // Creates a localize function to support arguments.
-    localizationClient.localize = function localize() {
-      // gets arguments through and passes them to
-      // i18next using sprintf to replace string placeholders
-      // with arguments.
-      const args = arguments;
-      const value = i18n.t(...args);
-      // If an array is used then a random value is selected
-      if (Array.isArray(value)) {
-        return value[Math.floor(Math.random() * value.length)];
-      }
-      return value;
-    };
-    // this gets the request attributes and save the localize function inside
-    // it to be used in a handler by calling requestAttributes.t(STRING_ID, [args...])
-    const attributes = handlerInput.attributesManager.getRequestAttributes();
-    attributes.t = function translate(...args) {
-      return localizationClient.localize(...args);
-    }
-  }
 };
 
 const skillBuilder = Alexa.SkillBuilders.custom();
@@ -149,7 +122,6 @@ exports.handler = skillBuilder
     FallbackHandler,
     SessionEndedRequestHandler,
   )
-  .addRequestInterceptors(LocalizationInterceptor)
   .addErrorHandlers(ErrorHandler)
   .withCustomUserAgent('sample/basic-fact/v2')
   .lambda();
