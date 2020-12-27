@@ -26,7 +26,7 @@ const BeginTestHandler = {
       && request.intent.name === "BeginTestIntent";
   },
   handle(handlerInput) {
-    const speakOutput = "Name this chord. beep."
+    const speakOutput = "Name this chord. beep.";
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .reprompt(speakOutput);
@@ -59,7 +59,7 @@ const FallbackHandler = {
   },
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    const speakOutput = "I'm sorry, good vibrations ear trainer doesn't recognize that. Please try again."
+    const speakOutput = "I'm sorry, good vibrations ear trainer doesn't recognize that. Please try again.";
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .reprompt(speakOutput)
