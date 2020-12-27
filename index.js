@@ -26,7 +26,8 @@ const BeginTestHandler = {
       && request.intent.name === "BeginTestIntent";
   },
   handle(handlerInput) {
-    const speakOutput = "Name this chord. beep.";
+    const audioFile = '<audio src="https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/C_Chord_Ukulele_1.mp3" />';
+    const speakOutput = "Name this chord. " + audioFile;
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .reprompt(speakOutput)
