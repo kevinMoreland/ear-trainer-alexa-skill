@@ -1,6 +1,11 @@
 const Alexa = require('ask-sdk-core');
 const i18n = require('i18next');
 
+const states = {
+  START: "start",
+  QUIZ: "quiz",
+};
+
 // when skill launches, provide instructions for the skill
 const LaunchHandler = {
   canHandle(handlerInput) {
@@ -19,15 +24,46 @@ const LaunchHandler = {
   },
 };
 
-const BeginTestHandler = {
+const TestAnswerHandler = {
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+        return request.type === 'IntentRequest'
+          && request.intent.name === "TestAnswerIntent";
+  }
+  handle(handlerInput) {
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+    const userAnswer = handlerInput.requestEnvelope.request.intent.slots.chord_type.value;
+    const answeredCorrectly = userAnswer == attributes.correctAnswer;
+
+    if(answeredCorrectly) {
+      var speakOutput = "Correct!";
+      return response.speak(speakOutput)
+                     .reprompt(speakOutput)
+                     .getResponse();
+    }
+    else {
+      var speakOutput = "Incorrect!";
+      return response.speak(speakOutput)
+                     .reprompt(speakOutput)
+                     .getResponse();
+    }
+  }
+};
+
+const TestHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
     return request.type === 'IntentRequest'
-      && request.intent.name === "BeginTestIntent";
+      && request.intent.name === "TestIntent";
   },
   handle(handlerInput) {
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
+
+    //TODO: randomly get an audioFile and chord
     const audioFile = '<audio src="https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/C_Chord_Ukulele_1.mp3" />';
     const speakOutput = "Name this chord. " + audioFile;
+    attributes.correctAnswer = "major";
+
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .reprompt(speakOutput)
@@ -117,7 +153,7 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
   .addRequestHandlers(
     LaunchHandler,
-    BeginTestHandler,
+    TestHandler,
     HelpHandler,
     ExitHandler,
     FallbackHandler,
