@@ -67,12 +67,13 @@ const TestHandler = {
       && request.intent.name === "TestIntent";
   },
   handle(handlerInput) {
-    const attributes = handlerInput.attributesManager.getSessionAttributes();
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
     //TODO: randomly get an audioFile and chord
     const audioFile = '<audio src="https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/C_Chord_Ukulele_1.mp3" />';
     const speakOutput = "Name this chord. " + audioFile;
-    attributes.correctAnswer = "major";
+    sessionAttributes.correctAnswer = "major";
+    sessionAttributes.state = states.QUIZ;
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
