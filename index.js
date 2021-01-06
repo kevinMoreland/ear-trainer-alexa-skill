@@ -29,7 +29,7 @@ const TestAnswerHandler = {
     const request = handlerInput.requestEnvelope.request;
         return request.type === 'IntentRequest'
           && request.intent.name === "TestAnswerIntent";
-  }
+  },
   handle(handlerInput) {
     const attributes = handlerInput.attributesManager.getSessionAttributes();
     const userAnswer = handlerInput.requestEnvelope.request.intent.slots.chord_type.value;
