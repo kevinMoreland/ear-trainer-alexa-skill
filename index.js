@@ -35,18 +35,17 @@ const TestAnswerHandler = {
     const userAnswer = handlerInput.requestEnvelope.request.intent.slots.chord_type.value;
     const answeredCorrectly = userAnswer == attributes.correctAnswer;
 
+    var speakOutput = "";
     if(answeredCorrectly) {
-      var speakOutput = "Correct!";
-      return response.speak(speakOutput)
-                     .reprompt(speakOutput)
-                     .getResponse();
+      speakOutput = "Correct!";
     }
     else {
-      var speakOutput = "Incorrect!";
-      return response.speak(speakOutput)
-                     .reprompt(speakOutput)
-                     .getResponse();
+      speakOutput = "Incorrect!";
     }
+    return handlerInput.responseBuilder
+                    .speak(speakOutput)
+                    .reprompt(speakOutput)
+                    .getResponse();
   }
 };
 
