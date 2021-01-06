@@ -31,20 +31,20 @@ const TestAnswerHandler = {
           && request.intent.name === "TestAnswerIntent";
   },
   handle(handlerInput) {
-    const attributes = handlerInput.attributesManager.getSessionAttributes();
-    const userAnswer = handlerInput.requestEnvelope.request.intent.slots.chord_type.value;
-    const answeredCorrectly = userAnswer == attributes.correctAnswer;
-
-    var speakOutput = "";
-    if(answeredCorrectly) {
-      speakOutput = "Correct!";
-    }
-    else {
-      speakOutput = "Incorrect!";
-    }
+//    const attributes = handlerInput.attributesManager.getSessionAttributes();
+//    const userAnswer = handlerInput.requestEnvelope.request.intent.slots.chord_type.value;
+//    const answeredCorrectly = userAnswer == attributes.correctAnswer;
+//
+//    var speakOutput = "";
+//    if(answeredCorrectly) {
+//      speakOutput = "Correct!";
+//    }
+//    else {
+//      speakOutput = "Incorrect!";
+//    }
     return handlerInput.responseBuilder
-                    .speak(speakOutput)
-                    .reprompt(speakOutput)
+                    .speak("testing testing")
+                    .reprompt("testing testing")
                     .getResponse();
   }
 };
