@@ -63,9 +63,6 @@ const TestAnswerHandler =  {
             console.log('***** consider adding "' + slotValues.chord_type.heardAs + '" to the custom slot type used by slot chord_type! ');
         }
 
-        if( (slotValues.chord_type.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.chord_type.heardAs) ) {
-            slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('TestAnswerIntent','chord_type'), 'or');
-        }
 
         say += slotStatus;
 
