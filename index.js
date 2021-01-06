@@ -44,7 +44,7 @@ const TestAnswerHandler =  {
               speakOutput = "correct!";
             }
             else {
-              speakOutput "incorrect. The answer was " + sessionAttributes.correctAnswer;
+              speakOutput = "incorrect. The answer was " + sessionAttributes.correctAnswer;
             }
             return handlerInput.responseBuilder
                          .speak(speakOutput)
