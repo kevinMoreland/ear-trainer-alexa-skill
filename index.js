@@ -6,6 +6,8 @@ const states = {
   QUIZ: "quiz",
 };
 
+const appName = "Ukulele ear trainer";
+
 // when skill launches, provide instructions for the skill
 const LaunchHandler = {
   canHandle(handlerInput) {
@@ -15,7 +17,7 @@ const LaunchHandler = {
   },
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    const speakOutput = "Hello, and welcome to good vibrations ear trainer. You can say 'test me' to begin a testing session.";
+    const speakOutput = "Hello, and welcome to " + appName + ". You can say 'test me' to begin a testing session.";
     let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
     sessionAttributes.state = states.START;
 
@@ -38,7 +40,7 @@ const TestAnswerHandler =  {
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         let slotValues = getSlotValues(request.intent.slots);
 
-        var speakOutput = "";
+        let speakOutput = "";
         if (slotValues.chord_type.heardAs) {
             if(slotValues.chord_type.heardAs === sessionAttributes.correctAnswer) {
               speakOutput = "correct!";
@@ -90,7 +92,7 @@ const HelpHandler = {
   },
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    const speakOutput = "Good vibrations ear trainer tests you on your ability to identify chords. Say test me to start a test.";
+    const speakOutput = appName + " tests you on your ability to identify major, major seventh, minor, minor seventh, diminished, or augmented chords played on an ukulele. Say test me to start a test.";
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .reprompt(speakOutput)
@@ -99,16 +101,17 @@ const HelpHandler = {
 };
 
 const FallbackHandler = {
-  // The FallbackIntent can only be sent in those locales which support it,
-  // so this handler will always be skipped in locales where it is not supported.
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
     return request.type === 'IntentRequest'
       && request.intent.name === 'AMAZON.FallbackIntent';
   },
   handle(handlerInput) {
-    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    const speakOutput = "I'm sorry, good vibrations ear trainer doesn't recognize that. Please try again.";
+    let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+    let speakOutput = "I'm sorry, " + appName + " doesn't recognize that. Please try again.";
+    if(sessionAttributes.state === states.QUIZ) {
+      speakOutput = "Please try again. Say either major, major seventh, minor, minor seventh, diminished, or augmented.";
+    }
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .reprompt(speakOutput)
@@ -151,7 +154,7 @@ const ErrorHandler = {
     console.log(`Error handled: ${error.message}`);
     console.log(`Error stack: ${error.stack}`);
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    const speakOutput = "Sorry, an error occured with good vibrations musical ear trainer.";
+    const speakOutput = "Sorry, an error occurred with " + appName + ".";
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .reprompt(speakOutput)
@@ -159,7 +162,21 @@ const ErrorHandler = {
   },
 };
 
+function getRandomAudioFileLink() {
+  return "https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + getRandomNote() + "_" + getRandomChordType() + "_Chord_Ukulele.mp3"
+}
 
+function getRandomNote() {
+  let chords = ["A", "B", "C", "D", "E", "F", "G"];
+  return chords[Math.floor(Math.random() * chords.length)];
+}
+
+function getRandomChordType() {
+  let chordTypes = ["maj", "min", "maj7", "min7", "aug", "dim"];
+  return chordTypes[Math.floor(Math.random() * chordTypes.length)];
+}
+
+// Obtained the code for this function from https://s3.amazonaws.com/webappvui/skillcode/v2/index.html
 function getSlotValues(filledSlots) {
     const slotValues = {};
 
