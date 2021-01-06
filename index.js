@@ -16,6 +16,8 @@ const LaunchHandler = {
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     const speakOutput = "Hello, and welcome to good vibrations ear trainer. You can say 'test me' to begin a testing session.";
+    let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+    sessionAttributes.state = states.START;
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
@@ -27,49 +29,33 @@ const LaunchHandler = {
 const TestAnswerHandler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'TestAnswerIntent' ;
+        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        return request.type === 'IntentRequest' && request.intent.name === 'TestAnswerIntent' && sessionAttributes.state === states.QUIZ;
     },
     handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
-        let say = 'Hello from TestAnswerIntent. ';
-
-        let slotStatus = '';
-        let resolvedSlot;
-
         let slotValues = getSlotValues(request.intent.slots);
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
-        // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
-        //   SLOT: chord_type
+        var speakOutput = "";
         if (slotValues.chord_type.heardAs) {
-            slotStatus += ' slot chord_type was heard as ' + slotValues.chord_type.heardAs + '. ';
-        } else {
-            slotStatus += 'slot chord_type is empty. ';
+            if(slotValues.chord_type.heardAs === sessionAttributes.correctAnswer) {
+              speakOutput = "correct!";
+            }
+            else {
+              speakOutput "incorrect. The answer was " + sessionAttributes.correctAnswer;
+            }
+            return handlerInput.responseBuilder
+                         .speak(speakOutput)
+                         .reprompt(speakOutput)
+                         .getResponse();
         }
-        if (slotValues.chord_type.ERstatus === 'ER_SUCCESS_MATCH') {
-            slotStatus += 'a valid ';
-            if(slotValues.chord_type.resolved !== slotValues.chord_type.heardAs) {
-                slotStatus += 'synonym for ' + slotValues.chord_type.resolved + '. ';
-                } else {
-                slotStatus += 'match. '
-            } // else {
-                //
-        }
-        if (slotValues.chord_type.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-            slotStatus += 'which did not match any slot value. ';
-            console.log('***** consider adding "' + slotValues.chord_type.heardAs + '" to the custom slot type used by slot chord_type! ');
-        }
-
-
-        say += slotStatus;
-
+        speakOutput = "please try again, say either major, major seventh, minor, minor seventh, diminished, or augmented"
 
         return responseBuilder
-            .speak(say)
-            .reprompt('try again, ' + say)
+            .speak(speakOutput)
+            .reprompt(speakOutput)
             .getResponse();
     },
 };
@@ -172,6 +158,7 @@ const ErrorHandler = {
   },
 };
 
+
 function getSlotValues(filledSlots) {
     const slotValues = {};
 
@@ -211,7 +198,7 @@ function getSlotValues(filledSlots) {
     }, this);
 
     return slotValues;
-} 
+}
 
 
 const skillBuilder = Alexa.SkillBuilders.custom();
