@@ -24,29 +24,57 @@ const LaunchHandler = {
   },
 };
 
-const TestAnswerHandler = {
-  canHandle(handlerInput) {
-    const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest'
-          && request.intent.name === "TestAnswerIntent";
-  },
-  handle(handlerInput) {
-//    const attributes = handlerInput.attributesManager.getSessionAttributes();
-//    const userAnswer = handlerInput.requestEnvelope.request.intent.slots.chord_type.value;
-//    const answeredCorrectly = userAnswer == attributes.correctAnswer;
-//
-//    var speakOutput = "";
-//    if(answeredCorrectly) {
-//      speakOutput = "Correct!";
-//    }
-//    else {
-//      speakOutput = "Incorrect!";
-//    }
-    return handlerInput.responseBuilder
-                    .speak("testing testing")
-                    .reprompt("testing testing")
-                    .getResponse();
-  }
+const TestAnswerHandler =  {
+    canHandle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request;
+        return request.type === 'IntentRequest' && request.intent.name === 'TestAnswerIntent' ;
+    },
+    handle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request;
+        const responseBuilder = handlerInput.responseBuilder;
+        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+
+        let say = 'Hello from TestAnswerIntent. ';
+
+        let slotStatus = '';
+        let resolvedSlot;
+
+        let slotValues = getSlotValues(request.intent.slots);
+        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+
+        // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
+        //   SLOT: chord_type
+        if (slotValues.chord_type.heardAs) {
+            slotStatus += ' slot chord_type was heard as ' + slotValues.chord_type.heardAs + '. ';
+        } else {
+            slotStatus += 'slot chord_type is empty. ';
+        }
+        if (slotValues.chord_type.ERstatus === 'ER_SUCCESS_MATCH') {
+            slotStatus += 'a valid ';
+            if(slotValues.chord_type.resolved !== slotValues.chord_type.heardAs) {
+                slotStatus += 'synonym for ' + slotValues.chord_type.resolved + '. ';
+                } else {
+                slotStatus += 'match. '
+            } // else {
+                //
+        }
+        if (slotValues.chord_type.ERstatus === 'ER_SUCCESS_NO_MATCH') {
+            slotStatus += 'which did not match any slot value. ';
+            console.log('***** consider adding "' + slotValues.chord_type.heardAs + '" to the custom slot type used by slot chord_type! ');
+        }
+
+        if( (slotValues.chord_type.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.chord_type.heardAs) ) {
+            slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('TestAnswerIntent','chord_type'), 'or');
+        }
+
+        say += slotStatus;
+
+
+        return responseBuilder
+            .speak(say)
+            .reprompt('try again, ' + say)
+            .getResponse();
+    },
 };
 
 const TestHandler = {
@@ -153,6 +181,7 @@ exports.handler = skillBuilder
   .addRequestHandlers(
     LaunchHandler,
     TestHandler,
+    TestAnswerHandler,
     HelpHandler,
     ExitHandler,
     FallbackHandler,
