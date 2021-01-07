@@ -162,8 +162,24 @@ const ErrorHandler = {
   },
 };
 
-function getRandomAudioFileLink() {
-  return "https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + getRandomNote() + "_" + getRandomChordType() + "_Chord_Ukulele.mp3"
+function getStartTestResponse() {
+  const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+  const correctChordType = getRandomChordType();
+  sessionAttributes.correctAnswer = correctChordType;
+
+  const speakOutput = "Name this chord. " + getRandomChordAudioAsSpeechString(correctChordType);
+
+  return handlerInput.responseBuilder
+    .speak(speakOutput)
+    .reprompt(speakOutput)
+    .getResponse();
+}
+//'<audio src="https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/C_Chord_Ukulele_1.mp3" />
+function getRandomChordAudioAsSpeechString(chordType) {
+  return '<audio src=\"' + getRandomAudioFileLink(correctChordType) + '\" />'
+}
+function getRandomAudioFileLink(chordType) {
+  return "https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + getRandomNote() + "_" + chordType + "_Chord_Ukulele.mp3"
 }
 
 function getRandomNote() {
@@ -172,7 +188,7 @@ function getRandomNote() {
 }
 
 function getRandomChordType() {
-  let chordTypes = ["maj", "min", "maj7", "min7", "aug", "dim"];
+  let chordTypes = ["major", "minor", "major seventh", "minor seventh", "augmented", "diminished"];
   return chordTypes[Math.floor(Math.random() * chordTypes.length)];
 }
 
