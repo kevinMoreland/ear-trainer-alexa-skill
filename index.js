@@ -5,7 +5,8 @@ const states = {
   START: "start",
   QUIZ: "quiz",
 };
-
+const chords = ["A", "B", "C", "D", "E", "F", "G"];
+const chordTypes = ["major", "minor", "major seventh", "minor seventh", "augmented", "diminished"];
 const appName = "Ukulele ear trainer";
 
 // when skill launches, provide instructions for the skill
@@ -17,7 +18,8 @@ const LaunchHandler = {
   },
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    const speakOutput = "Hello, and welcome to " + appName + ". You can say 'test me' to begin a testing session.";
+    //const speakOutput = "Hello, and welcome to " + appName + ". You can say 'test me' to begin a testing session.";
+    const speakOutput = audioFileTestSpeakOutput();
     let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
     sessionAttributes.state = states.START;
 
@@ -169,16 +171,28 @@ function getRandomChordAudioAsSpeechString(chordType) {
 }
 function getRandomAudioFileLink(chordType) {
   let convertedChordURIFriendly = chordType.replace(" ", "_");
-  return "https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + getRandomNote() + "_" + convertedChordURIFriendly + "_Chord_Ukulele.mp3"
+  return "https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + getRandomNote() + "_" + convertedChordURIFriendly + "_Chord_Ukulele.mp3";
+}
+
+function audioFileTestSpeakOutput() {
+  let speak = "This is a test. ";
+  let num = 0;
+  for(let i = 0; i < chords.length; i ++) {
+    for(let j = 0; j < chordTypes.length; j ++) {
+      num += 1;
+      let convertedChordURIFriendly = chordTypes[j].replace(" ", "_");
+      speak += "test, <audio src=\"https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + chords[i] + "_" + convertedChordURIFriendly + "_Chord_Ukulele.mp3";
+    }
+  }
+  speak += "end test. " + num + " chords tested.";
+  return speak;
 }
 
 function getRandomNote() {
-  let chords = ["A", "B", "C", "D", "E", "F", "G"];
   return chords[Math.floor(Math.random() * chords.length)];
 }
 
 function getRandomChordType() {
-  let chordTypes = ["major", "minor", "major seventh", "minor seventh", "augmented", "diminished"];
   return chordTypes[Math.floor(Math.random() * chordTypes.length)];
 }
 
