@@ -182,7 +182,7 @@ function audioFileTestSpeakOutput() {
       num += 1;
       let convertedChordURIFriendly = chordTypes[j].replace(" ", "_");
       let audioLink = "https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + chords[i] + "_" + convertedChordURIFriendly + "_Chord_Ukulele.mp3";
-      let audio = <audio src=audioLink />
+      let audio = "<audio src=\"" + audioLink+ "\" />";
       speak += "Test, " + audio + " ";
       break;
     }
