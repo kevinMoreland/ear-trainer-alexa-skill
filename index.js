@@ -21,6 +21,8 @@ const LaunchHandler = {
     const speakOutput = "Hello, and welcome to " + appName + ". You can say 'test me' to begin a testing session.";
     let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
     sessionAttributes.state = states.START;
+    sessionAttributes.streak = 0;
+    sessionAttributes.longestStreak = 0;
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
@@ -45,9 +47,18 @@ const TestAnswerHandler =  {
         if (slotValues.chord_type.heardAs) {
             if(slotValues.chord_type.heardAs === sessionAttributes.correctAnswer) {
               speakOutput = "Correct!";
+              sessionAttributes.streak += 1;
+              if(sessionAttributes.streak > sessionAttributes.longestStreak) {
+                sessionAttributes.longestStreak = sessionAttributes.streak;
+                speakOutput += " Your longest streak has increased to " + sessionAttributes.longestStreak + ".";
+              }
+              else {
+                speakOutput += " Your longest streak is " + sessionAttributes.longestStreak + ".";
+              }
             }
             else {
-              speakOutput = "Incorrect. The answer was " + sessionAttributes.correctAnswer + ".";
+              sessionAttributes.streak = 0;
+              speakOutput = "Incorrect. The answer was " + sessionAttributes.correctAnswer + ". Your longest streak is " + sessionAttributes.longestStreak + ".";
             }
             return randomChordQuiz(handlerInput, speakOutput);
         }
