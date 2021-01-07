@@ -48,7 +48,7 @@ const TestAnswerHandler =  {
             else {
               speakOutput = "Incorrect. The answer was " + sessionAttributes.correctAnswer + ".";
             }
-            return randomChordQuiz(speakOutput);
+            return randomChordQuiz(handlerInput, speakOutput);
         }
         speakOutput = "please try again, say either major, major seventh, minor, minor seventh, diminished, or augmented"
 
@@ -66,7 +66,7 @@ const TestHandler = {
       && request.intent.name === "TestIntent";
   },
   handle(handlerInput) {
-    return randomChordQuiz("");
+    return randomChordQuiz(handlerInput, "");
   },
 };
 
@@ -148,10 +148,11 @@ const ErrorHandler = {
   },
 };
 
-function randomChordQuiz(resultFromPreviousQuiz) {
-  sessionAttributes.state = states.QUIZ;
+function randomChordQuiz(handlerInput, resultFromPreviousQuiz) {
 
   const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+  sessionAttributes.state = states.QUIZ;
+
   const correctChordType = getRandomChordType();
   sessionAttributes.correctAnswer = correctChordType;
 
@@ -164,7 +165,7 @@ function randomChordQuiz(resultFromPreviousQuiz) {
 }
 //'<audio src="https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/C_Chord_Ukulele_1.mp3" />
 function getRandomChordAudioAsSpeechString(chordType) {
-  return '<audio src=\"' + getRandomAudioFileLink(correctChordType) + '\" />'
+  return '<audio src=\"' + getRandomAudioFileLink(chordType) + '\" />'
 }
 function getRandomAudioFileLink(chordType) {
   return "https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + getRandomNote() + "_" + chordType + "_Chord_Ukulele.mp3"
