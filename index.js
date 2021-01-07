@@ -43,15 +43,12 @@ const TestAnswerHandler =  {
         let speakOutput = "";
         if (slotValues.chord_type.heardAs) {
             if(slotValues.chord_type.heardAs === sessionAttributes.correctAnswer) {
-              speakOutput = "correct!";
+              speakOutput = "Correct!";
             }
             else {
-              speakOutput = "incorrect. The answer was " + sessionAttributes.correctAnswer;
+              speakOutput = "Incorrect. The answer was " + sessionAttributes.correctAnswer + ".";
             }
-            return handlerInput.responseBuilder
-                         .speak(speakOutput)
-                         .reprompt(speakOutput)
-                         .getResponse();
+            return randomChordQuiz(speakOutput);
         }
         speakOutput = "please try again, say either major, major seventh, minor, minor seventh, diminished, or augmented"
 
@@ -69,18 +66,7 @@ const TestHandler = {
       && request.intent.name === "TestIntent";
   },
   handle(handlerInput) {
-    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
-    //TODO: randomly get an audioFile and chord
-    const audioFile = '<audio src="https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/C_Chord_Ukulele_1.mp3" />';
-    const speakOutput = "Name this chord. " + audioFile;
-    sessionAttributes.correctAnswer = "major";
-    sessionAttributes.state = states.QUIZ;
-
-    return handlerInput.responseBuilder
-      .speak(speakOutput)
-      .reprompt(speakOutput)
-      .getResponse();
+    return randomChordQuiz("");
   },
 };
 
@@ -162,12 +148,14 @@ const ErrorHandler = {
   },
 };
 
-function getStartTestResponse() {
+function randomChordQuiz(resultFromPreviousQuiz) {
+  sessionAttributes.state = states.QUIZ;
+
   const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
   const correctChordType = getRandomChordType();
   sessionAttributes.correctAnswer = correctChordType;
 
-  const speakOutput = "Name this chord. " + getRandomChordAudioAsSpeechString(correctChordType);
+  const speakOutput = (resultFromPreviousQuiz === "" ? "" : resultFromPreviousQuiz + " ") + "Name this chord. " + getRandomChordAudioAsSpeechString(correctChordType);
 
   return handlerInput.responseBuilder
     .speak(speakOutput)
