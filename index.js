@@ -168,7 +168,8 @@ function getRandomChordAudioAsSpeechString(chordType) {
   return '<audio src=\"' + getRandomAudioFileLink(chordType) + '\" />'
 }
 function getRandomAudioFileLink(chordType) {
-  return "https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + getRandomNote() + "_" + chordType + "_Chord_Ukulele.mp3"
+  let convertedChordURIFriendly = chordType.replace(" ", "_");
+  return "https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + getRandomNote() + "_" + convertedChordURIFriendly + "_Chord_Ukulele.mp3"
 }
 
 function getRandomNote() {
