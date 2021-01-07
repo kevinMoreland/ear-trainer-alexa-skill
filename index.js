@@ -181,7 +181,8 @@ function audioFileTestSpeakOutput() {
     for(let j = 0; j < chordTypes.length; j ++) {
       num += 1;
       let convertedChordURIFriendly = chordTypes[j].replace(" ", "_");
-      speak += 'Test, <audio src="https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/' + chords[i] + '_' + convertedChordURIFriendly + '_Chord_Ukulele.mp3" />. ';
+      speak += "Basic test. ";
+      //speak += 'Test, <audio src="https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/' + chords[i] + '_' + convertedChordURIFriendly + '_Chord_Ukulele.mp3" />. ';
     }
   }
   speak += "End test. " + num + " chords tested.";
