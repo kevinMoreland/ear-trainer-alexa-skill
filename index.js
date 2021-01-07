@@ -167,7 +167,7 @@ function randomChordQuiz(handlerInput, resultFromPreviousQuiz) {
 }
 //'<audio src="https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/C_Chord_Ukulele_1.mp3" />
 function getRandomChordAudioAsSpeechString(chordType) {
-  return '<audio src="' + getRandomAudioFileLink(chordType) + '" />'
+  return '<audio src=\"' + getRandomAudioFileLink(chordType) + '\" />'
 }
 function getRandomAudioFileLink(chordType) {
   let convertedChordURIFriendly = chordType.replace(" ", "_");
@@ -182,7 +182,7 @@ function audioFileTestSpeakOutput() {
       num += 1;
       let convertedChordURIFriendly = chordTypes[j].replace(" ", "_");
       //speak += "Basic test. ";
-      speak += 'Test, <audio src="https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/' + chords[i] + '_' + convertedChordURIFriendly + '_Chord_Ukulele.mp3" />. ';
+      speak += 'Test, <audio src=' + '\"https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/' + chords[i] + '_' + convertedChordURIFriendly + '_Chord_Ukulele.mp3\" />. ';
       break;
     }
     break;
