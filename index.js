@@ -171,7 +171,7 @@ function getRandomChordAudioAsSpeechString(chordType) {
 }
 function getRandomAudioFileLink(chordType) {
   let convertedChordURIFriendly = chordType.replace(" ", "_");
-  return "https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + getRandomNote() + "_" + convertedChordURIFriendly + "_Chord_Ukulele.mp3";
+  return "'https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + getRandomNote() + "_" + convertedChordURIFriendly + "_Chord_Ukulele.mp3'";
 }
 
 function audioFileTestSpeakOutput() {
@@ -181,7 +181,7 @@ function audioFileTestSpeakOutput() {
     for(let j = 0; j < chordTypes.length; j ++) {
       num += 1;
       let convertedChordURIFriendly = chordTypes[j].replace(" ", "_");
-      let audioLink = "https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + chords[i] + "_" + convertedChordURIFriendly + "_Chord_Ukulele.mp3";
+      let audioLink = "'https://alexa-musical-ear-trainer-bucket-123.s3.amazonaws.com/" + chords[i] + "_" + convertedChordURIFriendly + "_Chord_Ukulele.mp3'";
       let audio = '<audio src=' + audioLink+ ' />';
       speak += "Test, " + audio + " ";
       break;
